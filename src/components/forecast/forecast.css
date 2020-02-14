@@ -1,0 +1,22 @@
+.carousel {
+    overflow: hidden;
+    width: 100%;
+}
+.carousel .carousel-inner{
+    flex: 2 calc(100% - 10px);
+    /* width: 1000%; */
+}
+.carousel .carousel-control-prev {
+    flex: 1 50px;
+}
+.carousel .carousel-control-next {
+    flex: 3 50px;
+}
+.tile {
+    display: block;
+    padding: 10px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    text-align: center;
+    width: 160px;
+}
