@@ -5,7 +5,6 @@ export default class wapiSevice {
         this._apiSearchBase = `&APPID=${_apiKey}&units=metric`;
     }
 
-
     getResource = async (url, cityId) => {
         const res = await fetch(`${this._apiBase}${url}?id=${cityId}${this._apiSearchBase}`);
 
@@ -16,7 +15,7 @@ export default class wapiSevice {
         return await res.json();
     }
 
-    getWeather = (cityId = 700568) => {
+    getWeather = (cityId) => {
         return this.getResource('weather', cityId)
             .then((data) => {
                 return this._transformWeatherData(data);
@@ -25,9 +24,9 @@ export default class wapiSevice {
 
     getForecast = (cityId = 700568) => {
         return this.getResource('forecast', cityId)
-        .then( (data) => {
-            return data.list.map(this._transformForecastData);
-        });
+            .then((data) => {
+                return data.list.map(this._transformForecastData);
+            });
     }
 
     _tansformTimestampToTime(timeStamp) {
@@ -66,8 +65,8 @@ export default class wapiSevice {
         };
     }
     _transformForecastData = (data) => {
-        const { dt, weather, main, wind, clouds, rain} = data;
-        
+        const { dt, weather, main, wind, clouds } = data;
+
         return {
             id: dt,
             day: this._tansformTimestampToDay(dt * 1000),
