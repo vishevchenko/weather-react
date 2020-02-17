@@ -57,6 +57,7 @@ export default class wapiSevice {
             pressure: main.pressure,
             humidity: main.humidity,
             windSpeed: wind.speed,
+            windDeg: wind.deg,
             clouds: clouds.all,
             weatherDesctiption: this._transformDescription(weather[0].description),
             icon: `https://openweathermap.org/img/wn/${weather[0].icon}@2x.png`,
@@ -72,10 +73,12 @@ export default class wapiSevice {
             day: this._tansformTimestampToDay(dt * 1000),
             time: this._tansformTimestampToTime(dt * 1000),
             icon: `https://openweathermap.org/img/wn/${weather[0].icon}@2x.png`,
+            temp: main.temp,
             tempMin: main.temp_min,
             tempMax: main.temp_max,
             desctiption: this._transformDescription(weather[0].description),
-            wind: wind.speed,
+            windSpeed: wind.speed,
+            windDeg: wind.deg,
             clouds: clouds.all
         };
     }

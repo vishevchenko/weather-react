@@ -37,3 +37,7 @@
     text-align: center;
     margin: 0;
 }
+.tile:hover {
+    cursor: pointer;
+    background-color: #dee2e6;
+}

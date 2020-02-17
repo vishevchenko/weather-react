@@ -12,15 +12,15 @@ const buildWeatherTiles = (list) => {
     return (
         list.map((item) => {
             const { id, day, time, icon,
-                tempMin, tempMax, desctiption,
-                wind } = item;
+                temp, desctiption,
+                windSpeed } = item;
             return (
                 <div key={id} className="tile pr-1 m-0 carousel-item">
                     <div key={id} className="border">
                         {day} <br />
                         <img src={icon} alt={desctiption} /> <br />
-                        {tempMin} &deg;C / {tempMax} &deg;C <br />
-                        {windIcon} {wind} m/s<br />
+                        {temp} &deg;C <br />
+                        {windIcon} {windSpeed} m/s<br />
                         {desctiption} <br /> <hr />
                         {time} <br />
 
@@ -36,7 +36,7 @@ export default class Forecast extends Component {
         list: null
     };
 
-    visibleTilesCount = 5;
+    visibleTilesCount = 6;
     tiles = React.createRef();
     wrapper = React.createRef();
 
@@ -45,7 +45,7 @@ export default class Forecast extends Component {
 
         this._setTileWidth();
 
-        if (prev.cityId == cityId) return;
+        if (prev.cityId === cityId) return;
 
         getData(cityId)
             .then((data) => {
