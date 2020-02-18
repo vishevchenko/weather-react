@@ -1,98 +1,52 @@
-import React, { Component } from "react";
-import Loader from '../loader';
+import React from "react";
 
-export default class CurrentWeather extends Component {
+const RenderProp = ({label, value, icon, children: dim}) => {
+    return (
+        <React.Fragment>
+            <dt className="col-6 text-right">{label || icon}</dt>
+            <dd className="col-6 text-left">{value} {dim}</dd>
+        </React.Fragment>
+    );
+};
 
-    state = {
-        weatherInfo: null,
-        error: false,
-        loading: false
-    };
+const CurrentWeatherView = ({ weatherInfo }) => {
+    const {
+        name, temp, weatherDesctiption,
+        icon, feelsLike, windSpeed,
+        pressure, humidity, clouds,
+    } = weatherInfo;
 
-    updateWeatherInfo = () => {
-        const { getData, cityId } = this.props;
-
-        this.setState({
-            weatherInfo: null,
-            error: false,
-            loading: true
-        });
-
-        cityId && getData(cityId)
-            .then((data) => {
-                this.setState({
-                    weatherInfo: data,
-                    error: true,
-                    loading: false
-                });
-            }).catch(() => {
-                this.setState({
-                    weatherInfo: null,
-                    error: true,
-                    loading: false
-                });
-            });
-    }
-
-    componentDidMount() {
-        this.updateWeatherInfo();
-    }
-
-    componentDidUpdate(prev) {
-        if (prev.cityId !== this.props.cityId) {
-            this.updateWeatherInfo();
-        }
-    }
-
-    render() {
-        const { weatherInfo, loading, error } = this.state;
-
-        if (loading) return <Loader />;
-        if (!error) return <h2>ERROR: NO DATA!</h2>;
-
-        const {
-            name, temp, weatherDesctiption,
-            icon, feelsLike, windSpeed,
-            pressure, humidity, clouds,
-        } = weatherInfo;
-        return (
-            <div className="row text-center">
-                <div className="col-12">
-                    <h2>{name}</h2>
-                    <p>
-                        <img src={icon} alt={weatherDesctiption} />
-                        <big>{temp}° C </big><br />
-                    </p>
-                </div>
-                <div className="col-12">
-                    <big>{weatherDesctiption}</big>
-                </div>
-                <div className="col-12">
-                    <div className="row">
-                        <div className="col-sm-6">
-                            <dl className="row">
-                                <dt className="col-6 text-right">Feels Like</dt>
-                                <dd className="col-6 text-left">{feelsLike}&deg;</dd>
-
-                                <dt className="col-6 text-right">Clouds</dt>
-                                <dd className="col-6 text-left">{clouds}%</dd>
-
-                                <dt className="col-6 text-right">Wind</dt>
-                                <dd className="col-6 text-left">{windSpeed} m/s</dd>
-                            </dl>
-                        </div>
-                        <div className="col-sm-6">
-                            <dl className="row">
-                                <dt className="col-6 text-right">Pressure</dt>
-                                <dd className="col-6 text-left">{pressure} hPa</dd>
-
-                                <dt className="col-6 text-right">Humidity</dt>
-                                <dd className="col-6 text-left">{humidity}%</dd>
-                            </dl>
-                        </div>
+    return (
+        <div className="row text-center">
+            <div className="col-12">
+                <h2>{name}</h2>
+                <p>
+                    <img src={icon} alt={weatherDesctiption} />
+                    <big>{temp}° C</big><br />
+                </p>
+            </div>
+            <div className="col-12">
+                <big>{weatherDesctiption}</big>
+            </div>
+            <div className="col-12">
+                <div className="row">
+                    <div className="col-sm-6">
+                        <dl className="row">
+                            <RenderProp label='Feels Like' value={feelsLike}>&deg;</RenderProp>
+                            <RenderProp label='Clouds' value={clouds}>%</RenderProp>
+                            <RenderProp label='Wind' value={windSpeed}>m/s</RenderProp>
+                        </dl>
+                    </div>
+                    <div className="col-sm-6">
+                        <dl className="row">
+                            <RenderProp label='Pressure' value={pressure}>hPa</RenderProp>
+                            <RenderProp label='Humidity' value={humidity}>%</RenderProp>
+                        </dl>
                     </div>
                 </div>
             </div>
-        );
-    }
-}
+        </div>
+    );
+};
+
+export default CurrentWeatherView;
