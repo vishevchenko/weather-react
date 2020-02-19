@@ -22,11 +22,70 @@ export default class wapiSevice {
             });
     }
 
-    getForecast = (cityId = 700568) => {
+    getForecast = (cityId) => {
         return this.getResource('forecast', cityId)
             .then((data) => {
                 return data.list.map(this._transformForecastData);
             });
+    }
+
+    getDailyForecast = (cityId) => {
+        return this.getForecast(cityId)
+            .then(data => {
+                return this._sortByDay(data);
+            })
+            .then(data => {
+                return this._transformDailyForecastData(data);
+            });
+    };
+    /**
+     * 
+     * @param {array} list - hourly forecast
+     * @returns {object}
+     */
+    _sortByDay(list) {
+        const res = {};
+
+        list.forEach(el => {
+            res[el.day] = res[el.day] || [];
+            res[el.day].push(el);
+        });
+
+        return res;
+    }
+
+    _getAllDayValues(list, props) {
+        const data = {};
+
+        list.forEach(item => {
+            props.forEach(prop => {
+                data[prop] = data[prop] || [];
+                data[prop].push(item[prop])
+            });
+        });
+        return data;
+    }
+
+    _transformDailyForecastData(data) {
+        const days = Object.keys(data);
+
+        return days.map(day => {
+            const { temp, description, icon } =
+                this._getAllDayValues(data[day], [
+                    'temp', 'description', 'icon'
+                ]);
+
+            const middleIdx =Math.floor(description.length / 2);
+
+            return {
+                id: day,
+                day,
+                tempMin: Math.min.apply(null, temp),
+                tempMax: Math.max.apply(null, temp),
+                description: description[middleIdx],
+                icon: icon[middleIdx]
+            };
+        });
     }
 
     _tansformTimestampToTime(timeStamp) {
@@ -34,6 +93,7 @@ export default class wapiSevice {
             .toLocaleTimeString()
             .replace(/\D\d\d$/, '');
     }
+
     _tansformTimestampToDay(timeStamp) {
         return new Date(timeStamp)
             .toDateString()
@@ -75,7 +135,7 @@ export default class wapiSevice {
             temp: main.temp,
             tempMin: main.temp_min,
             tempMax: main.temp_max,
-            desctiption: this._transformDescription(weather[0].description),
+            description: this._transformDescription(weather[0].description),
             windSpeed: wind.speed,
             windDeg: wind.deg,
             clouds: clouds.all

@@ -20,6 +20,7 @@ export default class App extends Component {
     this.setState({
       currentCity: this._cities[0].id
     });
+    this.state.wapiService.getDailyForecast(this._cities[0].id);
   }
 
   cityChangedHandler = (cityId) => {
@@ -29,19 +30,24 @@ export default class App extends Component {
   }
 
   render() {
-    const { getWeather, getForecast } = this.state.wapiService;
+    const { getWeather, getForecast, getDailyForecast } = this.state.wapiService;
 
     return (
       <div className="container">
         <br />
         <div className="row justify-content-center">
           <div className="col-7">
-              <DropDown options={this._cities} onChangeHandler={this.cityChangedHandler} />
-              <br />
-              <CurrentWeather getData={getWeather} cityId={this.state.currentCity} />
+            <DropDown options={this._cities} onChangeHandler={this.cityChangedHandler} />
+            <br />
+            <CurrentWeather getData={getWeather} cityId={this.state.currentCity} />
           </div>
         </div>
         <div className="row">
+          <div className="col">
+            <Forecast getData={getDailyForecast} tilesInRow={5} cityId={this.state.currentCity} />
+          </div>
+        </div>
+        <div className="row mt-3">
           <div className="col">
             <Forecast getData={getForecast} cityId={this.state.currentCity} />
           </div>
