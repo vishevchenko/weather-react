@@ -75,7 +75,7 @@ export default class wapiSevice {
                     'temp', 'description', 'icon'
                 ]);
 
-            const middleIdx =Math.floor(description.length / 2);
+            const middleIdx = Math.floor(description.length / 2);
 
             return {
                 id: day,

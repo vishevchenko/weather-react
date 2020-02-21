@@ -1,0 +1,36 @@
+.dailyTile .temp .min {
+    display: inline-block;
+    font-size: 14px;
+    margin-left: 6px;
+}
+.dailyTile .temp .max {
+    display: inline-block;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.dailyTile .date {
+    display: flex;
+    justify-content: center;
+}
+
+.dailyTile .date span {
+    display: inline-block;
+    padding-top: 18px;
+}
+
+.dailyTile .date .icon{
+    display: inline-block;
+    width: 80px;
+}
+
+.dailyTile .date img {
+    width: 100%;
+}
+
+.dailyTile .description{
+    display: block;
+    font-size: 14px;
+    padding-top: 10px;
+    width: 100%;
+}
