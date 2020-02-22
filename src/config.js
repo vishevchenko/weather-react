@@ -26,7 +26,7 @@ const _cities = [
     { "id": 686967, "name": "Zhytomyr", "img": null }
 ];
 
-const _apiKey = '58cb55c68499bf05b449429bb5918a1f';
+const _apiKey = 'your_api_key';
 
 export {
     _cities,
