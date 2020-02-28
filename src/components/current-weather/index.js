@@ -1,5 +1,7 @@
 import React, { Component } from "react"
 
+import "./current-weather.css";
+
 import Loader from '../loader';
 import CurrentWeatherView from "./current-weather";
 

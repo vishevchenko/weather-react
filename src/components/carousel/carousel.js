@@ -9,7 +9,7 @@ export default class Carousel extends Component {
         const wrapper = this.wrapper.current;
         const wrapperWidth = wrapper && wrapper.getBoundingClientRect().width;
         const style = {
-            width: `calc(${wrapperWidth || 0}px / ${itemsInRow})`
+            width: `calc( (100vw - 80px) / ${itemsInRow} )`
         };
 
         return (

@@ -62,10 +62,10 @@ export default class App extends Component {
     const { getWeather, getForecast, getDailyForecast } = this.state.wapiService;
 
     return (
-      <div className="container" style={{ backgroundImage: `url("${this.state.cityIMG}")` }}>
+      <div className="container-fluid" style={{ backgroundImage: `url("${this.state.cityIMG}")` }}>
         <br />
-        <div className="row justify-content-center">
-          <div className="col-7">
+        <div className="row mb-4 justify-content-center">
+          <div className="col-md-7">
             <DropDown options={this._cities} onChangeHandler={this.cityChangedHandler} />
             <br />
             <CurrentWeather getData={getWeather} cityId={this.state.currentCity} />

@@ -17,7 +17,7 @@ const CurrentWeatherView = ({ weatherInfo }) => {
     } = weatherInfo;
 
     return (
-        <div className="row text-center">
+        <div className="row text-center current-weather">
             <div className="col-12">
                 <h2>{name}</h2>
                 <p>

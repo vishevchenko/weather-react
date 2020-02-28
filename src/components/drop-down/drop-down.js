@@ -11,7 +11,7 @@ const DropDown = (props) => {
     const opts = BuildOptions(options);
 
     return (
-        <select className="form-control" onChange={e => onChangeHandler(e.target.value)}>
+        <select className="form-control drop-down" onChange={e => onChangeHandler(e.target.value)}>
             {opts}
         </select>
     );

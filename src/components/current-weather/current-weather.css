@@ -1,0 +1,7 @@
+.current-weather {
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.4);
+    padding-top: 20px;
+    max-width: 640px;
+    margin: auto;
+}

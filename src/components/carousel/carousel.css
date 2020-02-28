@@ -49,5 +49,24 @@
 }
 .tile:hover {
     cursor: pointer;
-    background-color: rgba(0, 0, 0, 0.3);;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+@media screen and (max-width: 539px) {
+    .carousel > div.inner-wrapper {
+        margin: 0;
+        overflow: auto;
+        width: 100vw;
+    }
+
+    .tile {
+        float: none;
+        min-width: 100vw !important;
+        border-bottom: 3px solid rgba(0, 0, 0, 0.35);
+    }
+
+    .carousel .carousel-control-prev,
+    .carousel .carousel-control-next {
+        display: none;
+    }
 }
