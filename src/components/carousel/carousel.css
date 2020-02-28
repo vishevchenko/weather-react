@@ -1,3 +1,9 @@
+.carousel {
+    color: #fff;
+    margin: 0 -15px;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
 .carousel > div.inner-wrapper {
     overflow: hidden;
     margin-left: 50px;
@@ -43,5 +49,5 @@
 }
 .tile:hover {
     cursor: pointer;
-    background-color: #dee2e6;
+    background-color: rgba(0, 0, 0, 0.3);;
 }
