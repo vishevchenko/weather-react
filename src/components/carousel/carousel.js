@@ -5,28 +5,55 @@ export default class Carousel extends Component {
     wrapper = React.createRef();
     inner = React.createRef();
 
+    componentDidMount() {
+        window.addEventListener('resize', this._recalcTileWidth);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('resize', this._recalcTileWidth);
+    }
+
+    _recalcTileWidth = () => {
+        const newWidth = (window.innerWidth - 80) / this.props.itemsInRow;
+        this.inner.current
+            .querySelectorAll('.tile')
+            .forEach(tile=> tile.style.width = `${newWidth}px`);
+    }
+
     componentDidUpdate(prevProps) {
         const prevItems = JSON.stringify(prevProps.items);
         const items = JSON.stringify(this.props.items);
-        
+
         if (prevItems !== items) {
             this.inner && (this.inner.current.style.left = '0px');
         }
     }
 
+    onItemSelected = ({ currentTarget }, item) => {
+        const { onTileClick } = this.props;
+        if (onTileClick) {
+
+            this.inner.current.querySelectorAll('.tile')
+                .forEach(tile => tile.classList.remove('active'));
+
+            currentTarget.classList.add('active');
+            onTileClick(item);
+        }
+    };
+
     buildItems = (items) => {
         const { itemsInRow, children } = this.props;
+        const containerWidth = window.innerWidth - 80;
         const style = {
-            width: `calc( (100vw - 80px) / ${itemsInRow} )`
+            width: `${containerWidth / itemsInRow}px`
         };
-        const { onTileClick } = this.props;
 
         return items.map((item) => {
             return (
                 <div key={item.id}
                     className="tile"
                     style={style}
-                    onClick={() => { onTileClick && onTileClick(item) }}>
+                    onClick={(e) => { this.onItemSelected(e, item) }}>
                     {children(item)}
                 </div>
             );

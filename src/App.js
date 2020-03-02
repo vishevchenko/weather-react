@@ -22,13 +22,6 @@ export default class App extends Component {
     cityIMG: null
   }
 
-  updateCurrentWeather = () => {
-    this.state.wapiService
-      .getWeather(this.state.currentCity)
-      .then((data) => {
-        console.log(data);
-      });
-  }
 
   updateDailyWeather = () => {
     this.state.wapiService
@@ -62,10 +55,7 @@ export default class App extends Component {
     this.setState({
       currentCity: cityId,
       cityIMG: cityInfo.img || null
-    }, () => {
-      this.updateCurrentWeather();
-      this.updateDailyWeather();
-    });
+    }, this.updateDailyWeather);
   }
   onDailyTileClick = (item) => {
     const { wapiService, currentCity } = this.state;
@@ -75,7 +65,6 @@ export default class App extends Component {
         this.setState({
           hourlyWeatherData: list
         });
-
       });
   }
 
@@ -93,7 +82,7 @@ export default class App extends Component {
             <CurrentWeather getData={getWeather} cityId={this.state.currentCity} />
           </div>
         </div>
-        <div className="row my-4">
+        <div className="row mt-4">
           <div className="col">
             <Carousel items={weatherData} itemsInRow={6} onTileClick={this.onDailyTileClick}>
               {(item) => <DayWeatherTile item={item} />}
@@ -101,7 +90,7 @@ export default class App extends Component {
           </div>
         </div>
 
-        <div className="row mt-3">
+        <div className="row">
           <div className="col">
             <Carousel items={hourlyWeatherData} itemsInRow={6}>
               {(item) => {
