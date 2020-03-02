@@ -3,36 +3,71 @@ import React, { Component } from "react";
 export default class Carousel extends Component {
 
     wrapper = React.createRef();
+    inner = React.createRef();
 
-    render() {
-        const { items, itemsInRow, children } = this.props;
-        const wrapper = this.wrapper.current;
-        const wrapperWidth = wrapper && wrapper.getBoundingClientRect().width;
+    buildItems = (items) => {
+        const { itemsInRow, children } = this.props;
         const style = {
             width: `calc( (100vw - 80px) / ${itemsInRow} )`
         };
+        const { onTileClick } = this.props;
 
+        return items.map((item) => {
+            return (
+                <div key={item.id}
+                    className="tile"
+                    style={style}
+                    onClick={() => { onTileClick && onTileClick(item) }}>
+                    {children(item)}
+                </div>
+            );
+        })
+    }
+
+    onPrevClick = () => {
+        const { inner: { current: inner } } = this;
+        const { items, itemsInRow } = this.props;
+        const tileRect = inner.firstChild.getBoundingClientRect();
+        const innerLeft = parseInt(inner.style.left, 10) || 0;
+
+        if (innerLeft > -tileRect.width * (items.length - itemsInRow)) {
+            inner.style.left = `${innerLeft - tileRect.width}px`;
+        }
+    }
+
+    onNextClick = () => {
+        const { inner: { current: inner } } = this;
+        const tileRect = inner.firstChild.getBoundingClientRect();
+        const innerLeft = parseInt(inner.style.left, 10) || 0;
+
+        if (innerLeft < 0) {
+            inner.style.left = `${innerLeft + tileRect.width}px`;
+        }
+    }
+
+    render() {
+        const { items, itemsInRow } = this.props;
+        const tiles = this.buildItems(items);
         return (
             <div className="carousel slide">
                 <div className="inner-wrapper" ref={this.wrapper}>
-                    <div className="carousel-inner">
-                        {
-                            items.map((item) => {
-                                return (<div key={item.id} className="tile" style={style}>
-                                    {children(item)}
-                                </div>);
-                            })
-                        }
+                    <div className="carousel-inner" ref={this.inner}>
+                        {tiles}
                     </div>
                 </div>
-                <div className="carousel-control-prev rounded-circle">
-                    <span className="carousel-control-prev-icon"></span>
-                    <span className="sr-only">Previous</span>
-                </div>
-                <div className="carousel-control-next rounded-circle">
-                    <span className="carousel-control-next-icon"></span>
-                    <span className="sr-only">Next</span>
-                </div>
+
+                {(itemsInRow < items.length) &&
+                    <React.Fragment>
+                        <div className="carousel-control-prev rounded-circle" onClick={this.onPrevClick}>
+                            <span className="carousel-control-prev-icon"></span>
+                            <span className="sr-only">Previous</span>
+                        </div>
+                        <div className="carousel-control-next rounded-circle" onClick={this.onNextClick}>
+                            <span className="carousel-control-next-icon"></span>
+                            <span className="sr-only">Next</span>
+                        </div>
+                    </React.Fragment>
+                }
             </div>
         );
     }

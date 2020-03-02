@@ -3,6 +3,7 @@ export default class wapiSevice {
     constructor(_apiKey) {
         this._apiBase = "http://api.openweathermap.org/data/2.5/";
         this._apiSearchBase = `&APPID=${_apiKey}&units=metric`;
+        this._cache = {};
     }
 
     getResource = async (url, cityId) => {
@@ -16,16 +17,32 @@ export default class wapiSevice {
     }
 
     getWeather = (cityId) => {
+        if (this._cache[cityId] && this._cache[cityId].weather) {
+            return new Promise((resolve, reject) => {
+                resolve(this._cache[cityId].weather);
+            });
+        }
+
         return this.getResource('weather', cityId)
             .then((data) => {
-                return this._transformWeatherData(data);
+                this._cache[cityId].weather = this._transformWeatherData(data);
+                return this._cache[cityId].weather;
             });
     }
 
     getForecast = (cityId) => {
+        if (this._cache[cityId] && this._cache[cityId].forecast) {
+            return new Promise((resolve, reject) => {
+                resolve(this._cache[cityId].forecast);
+            });
+        }
+
+        this._cache[cityId] = [];
+
         return this.getResource('forecast', cityId)
             .then((data) => {
-                return data.list.map(this._transformForecastData);
+                this._cache[cityId].forecast = data.list.map(this._transformForecastData);
+                return this._cache[cityId].forecast;
             });
     }
 
@@ -38,10 +55,20 @@ export default class wapiSevice {
                 return this._transformDailyForecastData(data);
             });
     };
+
+    getHourlyForecast = (cityId, day) => {
+        return this.getForecast(cityId)
+            .then((data) => {
+                return data.filter(info => {
+                    return info.day === day
+                });
+            });
+    };
+
     /**
      * 
      * @param {array} list - hourly forecast
-     * @returns {object}
+     * @returns {object} weather sorted by day
      */
     _sortByDay(list) {
         const res = {};
@@ -124,6 +151,7 @@ export default class wapiSevice {
             sunset: this._tansformTimestampToTime(sys.sunset * 1000),
         };
     }
+
     _transformForecastData = (data) => {
         const { dt, weather, main, wind, clouds } = data;
 

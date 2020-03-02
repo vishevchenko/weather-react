@@ -15,17 +15,25 @@ export default class App extends Component {
 
   state = {
     wapiService: new wapiService(_apiKey),
+    currentWeatherData: {},
     weatherData: [],
+    hourlyWeatherData: [],
     currentCity: null,
     cityIMG: null
   }
 
-  updateDailyWeather = () => {
+  updateCurrentWeather = () => {
     this.state.wapiService
-      .getDailyForecast(this._cities[0].id)
+      .getWeather(this.state.currentCity)
       .then((data) => {
         console.log(data);
+      });
+  }
 
+  updateDailyWeather = () => {
+    this.state.wapiService
+      .getDailyForecast(this.state.currentCity || this._cities[0].id)
+      .then((data) => {
         this.setState({ weatherData: data });
       });
   }
@@ -37,7 +45,7 @@ export default class App extends Component {
         return cities[i]
       }
     }
-    
+
     return {};
   }
 
@@ -50,44 +58,67 @@ export default class App extends Component {
 
   cityChangedHandler = (cityId) => {
     const cityInfo = this.getCityInfo(cityId);
-    console.log(cityInfo);
-    
+
     this.setState({
       currentCity: cityId,
       cityIMG: cityInfo.img || null
-    }, this.updateDailyWeather);
+    }, () => {
+      this.updateCurrentWeather();
+      this.updateDailyWeather();
+    });
+  }
+  onDailyTileClick = (item) => {
+    const { wapiService, currentCity } = this.state;
+
+    wapiService.getHourlyForecast(currentCity, item.day)
+      .then((list) => {
+        this.setState({
+          hourlyWeatherData: list
+        });
+
+      });
   }
 
   render() {
-    const { getWeather, getForecast, getDailyForecast } = this.state.wapiService;
+    const { getWeather } = this.state.wapiService;
+    const { weatherData, hourlyWeatherData } = this.state;
 
     return (
       <div className="container-fluid" style={{ backgroundImage: `url("${this.state.cityIMG}")` }}>
-        <br />
-        <div className="row mb-4 justify-content-center">
-          <div className="col-md-7">
+        <div className="row justify-content-center">
+          <div className="col-md-7 my-4">
             <DropDown options={this._cities} onChangeHandler={this.cityChangedHandler} />
-            <br />
+          </div>
+          <div className="col-md-7">
             <CurrentWeather getData={getWeather} cityId={this.state.currentCity} />
           </div>
         </div>
-        <div className="row">
+        <div className="row my-4">
           <div className="col">
-            <Carousel items={this.state.weatherData} itemsInRow={6}>
+            <Carousel items={weatherData} itemsInRow={6} onTileClick={this.onDailyTileClick}>
               {(item) => <DayWeatherTile item={item} />}
             </Carousel>
           </div>
         </div>
-        {/* <div className="row">
-          <div className="col">
-            <Forecast getData={getDailyForecast} tilesInRow={5} cityId={this.state.currentCity} />
-          </div>
-        </div>
+
         <div className="row mt-3">
           <div className="col">
-            <Forecast getData={getForecast} cityId={this.state.currentCity} />
+            <Carousel items={hourlyWeatherData} itemsInRow={4}>
+              {(item) => {
+                const { icon, description, time, tempMax, windSpeed } = item;
+
+                return (
+                  <div className="forecastTile">
+                    <div className="time"><img src={icon} alt={description} /> {time}</div>
+                    <div className="temp"><strong>{tempMax} &deg;C</strong></div>
+                    <div className="description">{description}</div>
+                    <div className="wind"><i className="fa fa-wind"></i> {windSpeed}m/s</div>
+                  </div>
+                )
+              }}
+            </Carousel>
           </div>
-        </div> */}
+        </div>
       </div>
     );
   }
