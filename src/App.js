@@ -6,6 +6,7 @@ import CurrentWeather from "./components/current-weather";
 import Carousel from "./components/carousel";
 import DayWeatherTile from "./components/day-weather-tile";
 import HourWeatherTile from "./components/hour-weather-tile";
+import Loader from "./components/loader";
 
 import { _cities, _apiKey } from "./config";
 
@@ -55,9 +56,13 @@ export default class App extends Component {
 
     this.setState({
       currentCity: cityId,
-      cityIMG: cityInfo.img || null
+      cityIMG: cityInfo.img || null,
+      weatherData: [],
     }, this.updateDailyWeather);
   }
+
+
+  
   onDailyTileClick = (item) => {
     const { currentCity } = this.state;
 
@@ -73,6 +78,25 @@ export default class App extends Component {
     const { getWeather } = this._wapiService;
     const { weatherData, hourlyWeatherData } = this.state;
 
+    let hourlyForecast = '';
+    let dailyForecast = <Loader />;
+
+    if (hourlyWeatherData.length) {
+      hourlyForecast = (
+        <Carousel items={hourlyWeatherData} itemsInRow={6}>
+          {(item) => <HourWeatherTile item={item} />}
+        </Carousel>
+      );
+    }
+
+    if (weatherData.length) {
+      dailyForecast = (
+        <Carousel items={weatherData} itemsInRow={6} onTileClick={this.onDailyTileClick}>
+          {(item) => <DayWeatherTile item={item} />}
+        </Carousel>
+      );
+    }
+
     return (
       <div className="container-fluid" style={{ backgroundImage: `url("${this.state.cityIMG}")` }}>
         <div className="row justify-content-center">
@@ -83,21 +107,8 @@ export default class App extends Component {
             <CurrentWeather getData={getWeather} cityId={this.state.currentCity} />
           </div>
         </div>
-        <div className="row mt-4">
-          <div className="col">
-            <Carousel items={weatherData} itemsInRow={6} onTileClick={this.onDailyTileClick}>
-              {(item) => <DayWeatherTile item={item} />}
-            </Carousel>
-          </div>
-        </div>
-
-        <div className="row mt-3">
-          <div className="col">
-            <Carousel items={hourlyWeatherData} itemsInRow={6}>
-              {(item) => <HourWeatherTile item={item} />}
-            </Carousel>
-          </div>
-        </div>
+        {dailyForecast}
+        {hourlyForecast}
       </div>
     );
   }

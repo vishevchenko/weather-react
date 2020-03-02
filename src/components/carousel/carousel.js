@@ -17,7 +17,7 @@ export default class Carousel extends Component {
         const newWidth = (window.innerWidth - 80) / this.props.itemsInRow;
         this.inner.current
             .querySelectorAll('.tile')
-            .forEach(tile=> tile.style.width = `${newWidth}px`);
+            .forEach(tile => tile.style.width = `${newWidth}px`);
     }
 
     componentDidUpdate(prevProps) {
@@ -84,30 +84,35 @@ export default class Carousel extends Component {
     render() {
         const { items, itemsInRow } = this.props;
         const tiles = this.buildItems(items);
+
         return (
-            <div className="carousel slide">
-                <div className="inner-wrapper" ref={this.wrapper}>
-                    <div className="carousel-inner" ref={this.inner}>
-                        {tiles}
+            <div className="row mt-4">
+                <div className="col">
+                    <div className="carousel slide">
+                        <div className="inner-wrapper" ref={this.wrapper}>
+                            <div className="carousel-inner" ref={this.inner}>
+                                {tiles}
+                            </div>
+                        </div>
+
+                        {(itemsInRow < items.length) &&
+                            <React.Fragment>
+                                <div className="carousel-control-prev rounded-circle" onClick={this.onPrevClick}>
+                                    <span className="carousel-control-prev-icon">
+                                        <i className="fa fa-angle-left"></i>
+                                    </span>
+                                    <span className="sr-only">Previous</span>
+                                </div>
+                                <div className="carousel-control-next rounded-circle" onClick={this.onNextClick}>
+                                    <span className="carousel-control-next-icon">
+                                        <i className="fa fa-angle-right"></i>
+                                    </span>
+                                    <span className="sr-only">Next</span>
+                                </div>
+                            </React.Fragment>
+                        }
                     </div>
                 </div>
-
-                {(itemsInRow < items.length) &&
-                    <React.Fragment>
-                        <div className="carousel-control-prev rounded-circle" onClick={this.onPrevClick}>
-                            <span className="carousel-control-prev-icon">
-                                <i className="fa fa-angle-left"></i>
-                            </span>
-                            <span className="sr-only">Previous</span>
-                        </div>
-                        <div className="carousel-control-next rounded-circle" onClick={this.onNextClick}>
-                            <span className="carousel-control-next-icon">
-                                <i className="fa fa-angle-right"></i>
-                            </span>
-                            <span className="sr-only">Next</span>
-                        </div>
-                    </React.Fragment>
-                }
             </div>
         );
     }
