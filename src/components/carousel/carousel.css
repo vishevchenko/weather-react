@@ -42,9 +42,10 @@
     min-width: 150px;
     min-height: 150px;
 }
-.tile:hover {
+.tile:hover,
+.tile.active {
     cursor: pointer;
-    background-color: rgba(0, 0, 0, 0.3);
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
 @media screen and (max-width: 539px) {
