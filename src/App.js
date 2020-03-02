@@ -3,18 +3,18 @@ import React, { Component } from 'react';
 import wapiService from "./services/wapi-service";
 import DropDown from "./components/drop-down";
 import CurrentWeather from "./components/current-weather";
-// import Forecast from "./components/forecast";
 import Carousel from "./components/carousel";
 import DayWeatherTile from "./components/day-weather-tile";
+import HourWeatherTile from "./components/hour-weather-tile";
 
 import { _cities, _apiKey } from "./config";
 
 export default class App extends Component {
 
   _cities = _cities;
+  _wapiService = new wapiService(_apiKey);
 
   state = {
-    wapiService: new wapiService(_apiKey),
     currentWeatherData: {},
     weatherData: [],
     hourlyWeatherData: [],
@@ -24,7 +24,7 @@ export default class App extends Component {
 
 
   updateDailyWeather = () => {
-    this.state.wapiService
+    this._wapiService
       .getDailyForecast(this.state.currentCity || this._cities[0].id)
       .then((data) => {
         this.setState({ weatherData: data });
@@ -33,6 +33,7 @@ export default class App extends Component {
 
   getCityInfo(cityId) {
     const cities = this._cities;
+
     for (let i = 0; i < cities.length; i++) {
       if (cityId == cities[i].id) {
         return cities[i]
@@ -58,9 +59,9 @@ export default class App extends Component {
     }, this.updateDailyWeather);
   }
   onDailyTileClick = (item) => {
-    const { wapiService, currentCity } = this.state;
+    const { currentCity } = this.state;
 
-    wapiService.getHourlyForecast(currentCity, item.day)
+    this._wapiService.getHourlyForecast(currentCity, item.day)
       .then((list) => {
         this.setState({
           hourlyWeatherData: list
@@ -69,7 +70,7 @@ export default class App extends Component {
   }
 
   render() {
-    const { getWeather } = this.state.wapiService;
+    const { getWeather } = this._wapiService;
     const { weatherData, hourlyWeatherData } = this.state;
 
     return (
@@ -93,18 +94,7 @@ export default class App extends Component {
         <div className="row mt-3">
           <div className="col">
             <Carousel items={hourlyWeatherData} itemsInRow={6}>
-              {(item) => {
-                const { icon, description, time, tempMax, windSpeed } = item;
-
-                return (
-                  <div className="forecastTile">
-                    <div className="time"><img src={icon} alt={description} /> {time}</div>
-                    <div className="temp"><strong>{tempMax} &deg;C</strong></div>
-                    <div className="description">{description}</div>
-                    <div className="wind"><i className="fa fa-wind"></i> {windSpeed}m/s</div>
-                  </div>
-                )
-              }}
+              {(item) => <HourWeatherTile item={item} />}
             </Carousel>
           </div>
         </div>
