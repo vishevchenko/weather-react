@@ -7,7 +7,7 @@ const HourWeatherTile = (props) => {
     } = props.item;
     return (
         <div className="hourlyTile">
-            <div className="time"><img src={icon} alt={description} /> {time}</div>
+            <div className="time"><img src={icon} alt={description} />{time}</div>
             <div className="temp">{tempMax} &deg;C</div>
             <div className="wind"><i className="fa fa-wind"></i> {windSpeed}m/s</div>
             <div className="description">{description}</div>
