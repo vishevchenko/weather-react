@@ -103,7 +103,7 @@ export default class App extends Component {
 
         <div className="row mt-3">
           <div className="col">
-            <Carousel items={hourlyWeatherData} itemsInRow={4}>
+            <Carousel items={hourlyWeatherData} itemsInRow={6}>
               {(item) => {
                 const { icon, description, time, tempMax, windSpeed } = item;
 

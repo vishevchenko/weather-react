@@ -5,6 +5,15 @@ export default class Carousel extends Component {
     wrapper = React.createRef();
     inner = React.createRef();
 
+    componentDidUpdate(prevProps) {
+        const prevItems = JSON.stringify(prevProps.items);
+        const items = JSON.stringify(this.props.items);
+        
+        if (prevItems !== items) {
+            this.inner && (this.inner.current.style.left = '0px');
+        }
+    }
+
     buildItems = (items) => {
         const { itemsInRow, children } = this.props;
         const style = {
@@ -59,11 +68,15 @@ export default class Carousel extends Component {
                 {(itemsInRow < items.length) &&
                     <React.Fragment>
                         <div className="carousel-control-prev rounded-circle" onClick={this.onPrevClick}>
-                            <span className="carousel-control-prev-icon"></span>
+                            <span className="carousel-control-prev-icon">
+                                <i className="fa fa-angle-left"></i>
+                            </span>
                             <span className="sr-only">Previous</span>
                         </div>
                         <div className="carousel-control-next rounded-circle" onClick={this.onNextClick}>
-                            <span className="carousel-control-next-icon"></span>
+                            <span className="carousel-control-next-icon">
+                                <i className="fa fa-angle-right"></i>
+                            </span>
                             <span className="sr-only">Next</span>
                         </div>
                     </React.Fragment>
